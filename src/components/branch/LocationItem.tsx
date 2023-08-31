@@ -2,18 +2,32 @@ import { deleteLocation, editLocation } from "@/app/apis/branch";
 import { ICompanyLocationListData } from "@/types/branch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useRef, useState } from "react";
+import ButtonModal from "../common/ButtonModal";
+import ModalLayout from "../common/ModalLayout";
+import { IModalContent } from "@/types/common";
 
 function LocationItem({ location, companyId }: { location: ICompanyLocationListData; companyId: number }) {
   const [editMode, setEditMode] = useState(false);
   const inputName = useRef<HTMLInputElement>(null);
   const inputAddress = useRef<HTMLInputElement>(null);
   const inputSpecific = useRef<HTMLInputElement>(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalContents_Default = {
+    content: "현재 지점에 소속된 PB가 존재합니다.",
+    confirmText: "확인",
+    confirmFn: () => {
+      setIsModalOpen(false);
+    },
+  };
+  const [modalContent, setModalContent] = useState<IModalContent>(modalContents_Default);
   const queryClient = useQueryClient();
   const { mutate: mutateDelete } = useMutation(deleteLocation, {
     onSuccess: () => {
       queryClient.refetchQueries(["companyLocation"]);
       setEditMode(false);
+    },
+    onError: () => {
+      setIsModalOpen(true);
     },
   });
 
@@ -116,6 +130,7 @@ function LocationItem({ location, companyId }: { location: ICompanyLocationListD
           </>
         )}
       </div>
+      {isModalOpen && <ButtonModal modalContents={modalContent} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />}
     </li>
   );
 }

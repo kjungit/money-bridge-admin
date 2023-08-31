@@ -58,7 +58,7 @@ function Page() {
         <div className="flex w-full flex-col">
           <div className="flex h-[52px] justify-between bg-[#425C6F] px-4">
             <h3 className="text-center leading-[52px] text-white">
-              {company.id !== 0 ? <span className="font-bold">{company.name} </span> : ""}지점 리스트
+              {company.id !== 0 ? <span className="font-bold">{company.name} </span> : ""}
             </h3>
             {company.id !== 0 && (
               <div className="flex items-center gap-2 text-sm">
